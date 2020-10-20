@@ -1,5 +1,9 @@
+#ifndef STATE_H
+#define STATE_H
+
 #include <cstdint>
 #include <ConditionCodes.h>
+
 class State {
     public:
         std::uint8_t a;
@@ -41,3 +45,4 @@ class State {
             int_enable{_int_enable}
     {}
 };
+#endif

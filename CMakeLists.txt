@@ -7,6 +7,7 @@ include_directories(src)
 set(SOURCES
     src/main.cpp
     src/State.cpp
+    src/CPU.cpp
 )
 
 add_executable(${APP_NAME} ${SOURCES})
