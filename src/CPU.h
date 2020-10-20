@@ -23,7 +23,7 @@ class CPU {
                 0,
                 0,
                 (std::uint8_t*)::malloc(MEMORY_SIZE), // memory
-                ConditionCodes{1,1,1,1,1,3},
+                ConditionCodes{0,0,0,0,0,0},
                 0
             }
         {};

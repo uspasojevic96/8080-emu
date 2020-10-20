@@ -4,12 +4,12 @@
 
 class ConditionCodes {
     public:
-        std::uint8_t z;
-        std::uint8_t s;
-        std::uint8_t p;
-        std::uint8_t cy;
-        std::uint8_t ac;
-        std::uint8_t pad;
+        std::uint8_t z:1;
+        std::uint8_t s:1;
+        std::uint8_t p:1;
+        std::uint8_t cy:1;
+        std::uint8_t ac:1;
+        std::uint8_t pad:3;
 
     ConditionCodes(std::uint8_t _z,
                    std::uint8_t _s,
