@@ -15,6 +15,7 @@ class CPU {
         void INX(std::uint8_t& l, std::uint8_t& r);
         void STAX(std::uint8_t& l, std::uint8_t& r);
         void RLC();
+        void DAD(std::uint8_t const l, std::uint8_t const r);
 
     public:
         CPU() :

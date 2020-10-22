@@ -43,6 +43,16 @@ void CPU::RLC() {
     state_.cc.cy = (temp >> 7) > 0 ? 1 : 0;
 }
 
+void CPU::DAD(std::uint8_t const l, std::uint8_t const r) {
+    std::uint32_t hl = static_cast<std::uint32_t>(makeWord(state_.h, state_.l));
+    auto pair = makeWord(l, r);
+
+    hl = hl + pair;
+
+    state_.cc.cy = (hl & 0xffff0000) > 0 ? 1 : 0;
+    writeWord(state_.h, state_.l, static_cast<std::uint16_t>(hl & 0x0000ffff));
+}
+
 void CPU::run() {
     std::uint8_t *opcode = &state_.memory[state_.pc];
 
@@ -69,11 +79,12 @@ void CPU::run() {
             state_.b = opcode[1];
             state_.pc += 1;
             break;
-        case 0x07: {
+        case 0x07:
             RLC();
             break;
-        }
-        case 0x09: unimplementedInstruction(*opcode); break;
+        case 0x09:
+            DAD(state_.b, state_.c);
+            break;
         case 0x0a: unimplementedInstruction(*opcode); break;
         case 0x0b: unimplementedInstruction(*opcode); break;
         case 0x0c: unimplementedInstruction(*opcode); break;
