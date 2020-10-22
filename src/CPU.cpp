@@ -11,35 +11,68 @@ void CPU::unimplementedInstruction(const std::uint8_t& opcode) {
     ::exit(1);
 }
 
+std::uint16_t CPU::makeWord(std::uint8_t l, std::uint8_t r) {
+    return l << 8 | r;
+}
+
+void CPU::writeWord(std::uint8_t& l, std::uint8_t& r, std::uint16_t const address) {
+    r = address & 0x00ff;
+    l = address >> 8 & 0x00ff;
+}
+
+void CPU::LXI(std::uint8_t& l, std::uint8_t& r, std::uint8_t const* opcode) {
+    l = opcode[2];
+    r = opcode[1];
+}
+
+void CPU::INX(std::uint8_t& l, std::uint8_t& r) {
+    auto address = makeWord(l, r);
+    address += 1;
+    writeWord(l, r, address);
+}
+
+void CPU::STAX(std::uint8_t& l, std::uint8_t& r) {
+    auto address = makeWord(l, r);
+    state_.memory[address] = state_.a;
+}
+
+void CPU::RLC() {
+    auto temp = state_.a;
+
+    state_.a = temp << 1 | temp >> 7;
+    state_.cc.cy = (temp >> 7) > 0 ? 1 : 0;
+}
+
 void CPU::run() {
     std::uint8_t *opcode = &state_.memory[state_.pc];
 
     switch(*opcode) {
-        case 0x00: {// NOP
+        case 0x00:
             break;
-        }
-        case 0x01: {// LXI B, word
-            state_.c = opcode[1];
-            state_.b = opcode[2];
+        case 0x01:
+            LXI(state_.b, state_.c, opcode);
             state_.pc += 2;
             break;
-        }
-        case 0x02: {
-            std::uint16_t address = state_.b << 8 | state_.c;
-            state_.memory[address] = state_.a;
+        case 0x02:
+            STAX(state_.b, state_.c);
+            break;
+        case 0x03:
+            INX(state_.b, state_.c);
+            break;
+        case 0x04:
+            state_.b += 1;
+            break;
+        case 0x05:
+            state_.b -= 1;
+            break;
+        case 0x06:
+            state_.b = opcode[1];
+            state_.pc += 1;
+            break;
+        case 0x07: {
+            RLC();
             break;
         }
-        case 0x03: {
-            std::uint16_t address = state_.b << 8 | state_.c;
-            address += 1;
-            state_.c = address & 0x00ff;
-            state_.b = address >> 8 & 0x00ff;
-            break;
-        }
-        case 0x04: unimplementedInstruction(*opcode); break;
-        case 0x05: unimplementedInstruction(*opcode); break;
-        case 0x06: unimplementedInstruction(*opcode); break;
-        case 0x07: unimplementedInstruction(*opcode); break;
         case 0x09: unimplementedInstruction(*opcode); break;
         case 0x0a: unimplementedInstruction(*opcode); break;
         case 0x0b: unimplementedInstruction(*opcode); break;

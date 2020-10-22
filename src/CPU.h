@@ -9,6 +9,12 @@
 class CPU {
     private:
         State state_;
+        void LXI(std::uint8_t& l, std::uint8_t& r, std::uint8_t const* opcode);
+        std::uint16_t makeWord(std::uint8_t l, std::uint8_t r);
+        void writeWord(std::uint8_t& l, std::uint8_t& r, std::uint16_t const address);
+        void INX(std::uint8_t& l, std::uint8_t& r);
+        void STAX(std::uint8_t& l, std::uint8_t& r);
+        void RLC();
 
     public:
         CPU() :
