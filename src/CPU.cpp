@@ -23,6 +23,7 @@ void CPU::writeWord(std::uint8_t& l, std::uint8_t& r, std::uint16_t const addres
 void CPU::LXI(std::uint8_t& l, std::uint8_t& r, std::uint8_t const* opcode) {
     l = opcode[2];
     r = opcode[1];
+    state_.pc += 2;
 }
 
 void CPU::INX(std::uint8_t& l, std::uint8_t& r) {
@@ -95,7 +96,6 @@ void CPU::run() {
             break;
         case 0x01:
             LXI(state_.b, state_.c, opcode);
-            state_.pc += 2;
             break;
         case 0x02:
             STAX(state_.b, state_.c);
@@ -125,37 +125,56 @@ void CPU::run() {
         case 0x0d: unimplementedInstruction(*opcode); break;
         case 0x0e: unimplementedInstruction(*opcode); break;
         case 0x0f: unimplementedInstruction(*opcode); break;
-        case 0x11: unimplementedInstruction(*opcode); break;
-        case 0x12: unimplementedInstruction(*opcode); break;
-        case 0x13: unimplementedInstruction(*opcode); break;
+        case 0x11:
+            LXI(state_.d, state_.e, opcode);
+            break;
+        case 0x12:
+            STAX(state_.d, state_.e);
+            break;
+        case 0x13:
+            INX(state_.d, state_.e);
+            break;
         case 0x14: unimplementedInstruction(*opcode); break;
         case 0x15: unimplementedInstruction(*opcode); break;
         case 0x16: unimplementedInstruction(*opcode); break;
         case 0x17: unimplementedInstruction(*opcode); break;
-        case 0x19: unimplementedInstruction(*opcode); break;
+        case 0x19:
+            DAD(state_.d, state_.e);
+            break;
         case 0x1a: unimplementedInstruction(*opcode); break;
         case 0x1b: unimplementedInstruction(*opcode); break;
         case 0x1c: unimplementedInstruction(*opcode); break;
         case 0x1d: unimplementedInstruction(*opcode); break;
         case 0x1e: unimplementedInstruction(*opcode); break;
         case 0x1f: unimplementedInstruction(*opcode); break;
-        case 0x21: unimplementedInstruction(*opcode); break;
+        case 0x21:
+            LXI(state_.h, state_.l, opcode);
+            break;
         case 0x22: unimplementedInstruction(*opcode); break;
-        case 0x23: unimplementedInstruction(*opcode); break;
+        case 0x23:
+            INX(state_.h, state_.l);
+            break;
         case 0x24: unimplementedInstruction(*opcode); break;
         case 0x25: unimplementedInstruction(*opcode); break;
         case 0x26: unimplementedInstruction(*opcode); break;
         case 0x27: unimplementedInstruction(*opcode); break;
-        case 0x29: unimplementedInstruction(*opcode); break;
+        case 0x29:
+            DAD(state_.h, state_.l);
+            break;
         case 0x2a: unimplementedInstruction(*opcode); break;
         case 0x2b: unimplementedInstruction(*opcode); break;
         case 0x2c: unimplementedInstruction(*opcode); break;
         case 0x2d: unimplementedInstruction(*opcode); break;
         case 0x2e: unimplementedInstruction(*opcode); break;
         case 0x2f: unimplementedInstruction(*opcode); break;
-        case 0x31: unimplementedInstruction(*opcode); break;
+        case 0x31:
+            state_.sp = makeWord(opcode[2], opcode[1]);
+            state_.pc += 2;
+            break;
         case 0x32: unimplementedInstruction(*opcode); break;
-        case 0x33: unimplementedInstruction(*opcode); break;
+        case 0x33:
+            state_.sp += 1;
+            break;
         case 0x34: unimplementedInstruction(*opcode); break;
         case 0x35: unimplementedInstruction(*opcode); break;
         case 0x36: unimplementedInstruction(*opcode); break;
