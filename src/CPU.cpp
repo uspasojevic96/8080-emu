@@ -53,6 +53,40 @@ void CPU::DAD(std::uint8_t const l, std::uint8_t const r) {
     writeWord(state_.h, state_.l, static_cast<std::uint16_t>(hl & 0x0000ffff));
 }
 
+void CPU::updateArithmeticFlags(std::uint16_t const result) {
+    state_.cc.z = (result & 0x00ff) == 0 ? 1 : 0;
+    state_.cc.s = (result & 0x80) == 0x80 ? 1 : 0;
+    state_.cc.p = checkParity(result & 0x00ff, 8) ? 1 : 0;
+    state_.cc.ac = result > 0x09 ? 1 : 0;
+}
+
+bool CPU::checkParity(int number, int size) {
+    int result = 0;
+
+    for(int i = 0; i < size; i++) {
+        result += number & 1;
+        number = number >> 1;
+    }
+
+    return (result % 2) == 0;
+}
+
+void CPU::INR(std::uint8_t& reg) {
+    std::uint16_t result = static_cast<std::uint16_t>(reg);
+    reg += 1;
+    result += 1;
+
+    updateArithmeticFlags(result);
+}
+
+void CPU::DCR(std::uint8_t& reg) {
+    std::uint16_t result = static_cast<std::uint16_t>(reg);
+    reg -= 1;
+    result -= 1;
+
+    updateArithmeticFlags(result);
+}
+
 void CPU::run() {
     std::uint8_t *opcode = &state_.memory[state_.pc];
 
@@ -70,10 +104,10 @@ void CPU::run() {
             INX(state_.b, state_.c);
             break;
         case 0x04:
-            state_.b += 1;
+            INR(state_.b);
             break;
         case 0x05:
-            state_.b -= 1;
+            DCR(state_.b);
             break;
         case 0x06:
             state_.b = opcode[1];

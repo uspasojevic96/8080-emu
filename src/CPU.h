@@ -16,6 +16,10 @@ class CPU {
         void STAX(std::uint8_t& l, std::uint8_t& r);
         void RLC();
         void DAD(std::uint8_t const l, std::uint8_t const r);
+        void INR(std::uint8_t& reg);
+        void DCR(std::uint8_t& reg);
+        void updateArithmeticFlags(std::uint16_t const result);
+        bool checkParity(int number, int size);
 
     public:
         CPU() :
